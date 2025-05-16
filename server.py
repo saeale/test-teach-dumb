@@ -514,9 +514,9 @@ def register():
                 about=form.about.data,
                 work=form.work.data,
                 work_address=form.work_address.data,
-                created_date=datetime.now().strftime('%d/%m/%y %H:%M:%S')
+                created_date=datetime.now().strftime('%d/%m/%y %H:%M:%S'),
+                hashed_password=form.password.data
             )
-            student.set_password(form.password.data)
             db_sess.add(student)
             db_sess.commit()
             user = User(role=0,
@@ -538,9 +538,9 @@ def register():
                 about=form.about.data,
                 work=form.work.data,
                 work_address=form.work_address.data,
-                created_date=datetime.now().strftime('%d/%m/%y %H:%M:%S')
+                created_date=datetime.now().strftime('%d/%m/%y %H:%M:%S'),
+                hashed_password=form.password.data
             )
-            teacher.set_password(form.password.data)
             db_sess.add(teacher)
             db_sess.commit()
             user = User(role=1,
@@ -569,7 +569,7 @@ def login():
         if not user:
             role = 1
             user = db_sess.query(Teacher).filter(Teacher.login == form.login.data).first()
-        if user and user.check_password(form.password.data):
+        if user and user.hashed_password == form.password.data:
             true_user = db_sess.query(User).filter(User.role == role, User.role_id == user.id).first()
             if not true_user:
                 abort(404)
